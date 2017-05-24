@@ -14,11 +14,17 @@ const io = socketIO(server);
 io.on('connection', (socket) => {
     console.log('New user connected');
 
-    socket.emit('newMessage', {
-        from: 'Ankush',
-        to: 'Mrigakshi',
-        text: 'How are you?'
+    io.emit('newMessage', {
+        from: 'Admin',
+        text: 'Welcome to chat room app',
+        createdAt: new Date().getTime()
     });
+
+    socket.broadcast.emit('newMessage', {
+        from: 'Admin',
+        text: 'New user joined',
+        createdAt: new Date().getTime()
+    })
 
     socket.on('createMessage', (message) => {
         console.log(message);
@@ -28,6 +34,13 @@ io.on('connection', (socket) => {
             text: message.text,
             createdAt: new Date().getTime()
         })
+
+        // broadcast to everyone but oneself
+        /*socket.broadcast.emit('newMessage', {
+            from: message.from,
+            text: message.text,
+            createdAt: new Date().getTime()
+        });*/
     })
 
     socket.on('disconnect', () => {
