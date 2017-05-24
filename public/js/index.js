@@ -6,7 +6,7 @@ socket.on('connect', function() {
     socket.emit('createMessage', {
         from: 'Mrigakshi',
         to: 'Ankush',
-        message: 'I am fine'
+        text: 'I am fine'
     })
 });
 
