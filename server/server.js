@@ -4,7 +4,7 @@ const path = require('path');
 const socketIO = require('socket.io');
 const {generateMessage} = require('./utils/message');
 
-const publicPath = path.join(__dirname , '../public');
+const publicPath = path.join(__dirname , '../chat-app/build');
 const app = express();
 app.use(express.static(publicPath));
 
@@ -17,12 +17,13 @@ io.on('connection', (socket) => {
 
     io.emit('newMessage', generateMessage('Admin','Welcome to chat room app'));
 
-    socket.broadcast.emit('newMessage', generateMessage('Admin','New user joined'))
+    socket.broadcast.emit('newMessage', generateMessage('Admin','New user joined'));
 
-    socket.on('createMessage', (message) => {
+    socket.on('createMessage', (message, cb) => {
         console.log(message);
         // emit event to all connections
-        io.emit('newMessage', generateMessage(message.from,message.text))
+        io.emit('newMessage', generateMessage(message.from,message.text));
+        cb('Authorised');
 
         // broadcast to everyone but oneself
         /*socket.broadcast.emit('newMessage', {
@@ -30,11 +31,11 @@ io.on('connection', (socket) => {
             text: message.text,
             createdAt: new Date().getTime()
         });*/
-    })
+    });
 
     socket.on('disconnect', () => {
         console.log('User disconnected');
-    })
+    });
 })
 
 server.listen('3000', () => {
